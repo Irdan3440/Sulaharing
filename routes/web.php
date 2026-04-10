@@ -1,6 +1,11 @@
 <?php
 
 use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\AuthController;
+use App\Http\Controllers\ConsultationController;
+use App\Http\Controllers\MahasiswaController;
+use App\Http\Controllers\PakarController;
+use App\Http\Controllers\AdminController;
 
 /*
 |--------------------------------------------------------------------------
@@ -9,99 +14,54 @@ use Illuminate\Support\Facades\Route;
 */
 
 // === Public / Landing ===
-Route::get('/', function () {
-    return view('pages.home');
-})->name('home');
+Route::get('/', function () { return view('pages.home'); })->name('home');
 
 // === Auth ===
-Route::get('/login', function () {
-    return view('pages.auth.login');
-})->name('login');
-
-Route::post('/login', function () {
-    // TODO: Implement auth logic
-    return redirect('/dashboard');
-});
-
-Route::get('/register', function () {
-    return view('pages.auth.register');
-})->name('register');
-
-Route::post('/register', function () {
-    // TODO: Implement registration logic
-    return redirect('/login');
-});
-
-Route::post('/logout', function () {
-    auth()->logout();
-    return redirect('/');
-})->name('logout');
+Route::get('/login', [AuthController::class, 'showLogin'])->name('login');
+Route::post('/login', [AuthController::class, 'login']);
+Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
+Route::post('/register', [AuthController::class, 'register']);
+Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 
 // === Guest Diagnosis ===
-Route::get('/diagnosa', function () {
-    return view('pages.guest.form');
-})->name('guest.form');
+Route::get('/diagnosa', [ConsultationController::class, 'guestForm'])->name('guest.form');
+Route::post('/diagnosa/process', [ConsultationController::class, 'guestStart'])->name('guest.process');
+Route::post('/diagnosa/result', [ConsultationController::class, 'guestResult'])->name('guest.result');
 
-Route::post('/diagnosa/process', function (\Illuminate\Http\Request $request) {
-    return view('pages.guest.questionnaire', [
-        'guest_name' => $request->input('guest_name', ''),
-        'guest_institusi' => $request->input('guest_institusi', ''),
-        'guest_usia' => $request->input('guest_usia', ''),
-    ]);
-})->name('guest.process');
+// === Mahasiswa (authenticated) ===
+Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
+    Route::get('/dashboard', [MahasiswaController::class, 'dashboard'])->name('dashboard');
+    Route::get('/konsultasi', [ConsultationController::class, 'mahasiswaStart'])->name('konsultasi');
+    Route::post('/konsultasi/result', [ConsultationController::class, 'mahasiswaResult'])->name('konsultasi.result');
+    Route::get('/riwayat', [MahasiswaController::class, 'riwayat'])->name('riwayat');
+    Route::get('/riwayat/{id}', [MahasiswaController::class, 'riwayatDetail'])->name('riwayat.detail');
+    Route::get('/biometric', [MahasiswaController::class, 'biometric'])->name('biometric');
+    Route::get('/notifications', [MahasiswaController::class, 'notifications'])->name('notifications');
+    Route::post('/mood', [MahasiswaController::class, 'storeMood'])->name('mood.store');
+});
 
-Route::post('/diagnosa/result', function (\Illuminate\Http\Request $request) {
-    // Collect answers and calculate CF score (placeholder)
-    $totalScore = 0;
-    for ($i = 1; $i <= 21; $i++) {
-        $totalScore += (int) $request->input('answer_' . $i, 0);
-    }
+// === Pakar ===
+Route::middleware(['auth', 'role:pakar'])->prefix('pakar')->name('pakar.')->group(function () {
+    Route::get('/dashboard', [PakarController::class, 'dashboard'])->name('dashboard');
+    Route::get('/diseases', [PakarController::class, 'diseases'])->name('diseases');
+    Route::post('/diseases', [PakarController::class, 'diseaseStore'])->name('diseases.store');
+    Route::put('/diseases/{disease}', [PakarController::class, 'diseaseUpdate'])->name('diseases.update');
+    Route::delete('/diseases/{disease}', [PakarController::class, 'diseaseDestroy'])->name('diseases.destroy');
+    Route::get('/symptoms', [PakarController::class, 'symptoms'])->name('symptoms');
+    Route::post('/symptoms', [PakarController::class, 'symptomStore'])->name('symptoms.store');
+    Route::put('/symptoms/{symptom}', [PakarController::class, 'symptomUpdate'])->name('symptoms.update');
+    Route::delete('/symptoms/{symptom}', [PakarController::class, 'symptomDestroy'])->name('symptoms.destroy');
+    Route::get('/rules', [PakarController::class, 'rules'])->name('rules');
+    Route::post('/rules', [PakarController::class, 'ruleStore'])->name('rules.store');
+    Route::put('/rules/{rule}', [PakarController::class, 'ruleUpdate'])->name('rules.update');
+});
 
-    // Simple CF calculation placeholder
-    $cfPercentage = round(($totalScore / 63) * 100, 1);
-
-    // Classify
-    if ($totalScore <= 13) {
-        $classification = 'Minimal';
-    } elseif ($totalScore <= 19) {
-        $classification = 'Ringan';
-    } elseif ($totalScore <= 28) {
-        $classification = 'Sedang';
-    } else {
-        $classification = 'Berat';
-    }
-
-    return view('pages.guest.result', [
-        'cf_percentage' => $cfPercentage,
-        'classification' => $classification,
-        'raw_score' => $totalScore,
-        'is_guest' => true,
-        'guest_name' => $request->input('guest_name', ''),
-    ]);
-})->name('guest.result');
-
-// === Mahasiswa Dashboard (placeholder — works without auth for preview) ===
-Route::get('/dashboard', function () {
-    return view('pages.mahasiswa.dashboard');
-})->name('dashboard');
-
-// Placeholder routes for sidebar links
-Route::get('/konsultasi', function () {
-    return view('pages.guest.questionnaire', [
-        'guest_name' => auth()->user()->name ?? 'User',
-        'guest_institusi' => '',
-        'guest_usia' => '',
-    ]);
-})->name('konsultasi');
-
-Route::get('/riwayat', function () {
-    return redirect('/dashboard');
-})->name('riwayat');
-
-Route::get('/biometric', function () {
-    return redirect('/dashboard');
-})->name('biometric');
-
-Route::get('/notifications', function () {
-    return redirect('/dashboard');
-})->name('notifications');
+// === Admin ===
+Route::middleware(['auth', 'role:admin'])->prefix('admin')->name('admin.')->group(function () {
+    Route::get('/dashboard', [AdminController::class, 'dashboard'])->name('dashboard');
+    Route::get('/users', [AdminController::class, 'users'])->name('users');
+    Route::post('/users', [AdminController::class, 'userStore'])->name('users.store');
+    Route::put('/users/{user}', [AdminController::class, 'userUpdate'])->name('users.update');
+    Route::delete('/users/{user}', [AdminController::class, 'userDestroy'])->name('users.destroy');
+    Route::get('/reports', [AdminController::class, 'reports'])->name('reports');
+});
