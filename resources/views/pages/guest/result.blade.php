@@ -108,7 +108,8 @@
             <!-- Actions -->
             <div class="result-actions">
                 @if(!($is_guest ?? true))
-                    <a href="#" class="btn btn-primary btn-lg">
+                    {{-- Mahasiswa: Download PDF + Lihat Riwayat --}}
+                    <a href="{{ route('riwayat.pdf', $consultation->id) }}" class="btn btn-primary btn-lg">
                         <i data-lucide="download" style="width:20px;height:20px"></i>
                         Download PDF
                     </a>
@@ -117,11 +118,16 @@
                         Lihat Riwayat
                     </a>
                 @else
-                    <a href="{{ url('/register') }}" class="btn btn-primary btn-lg">
+                    {{-- Guest: Download PDF + Buat Akun + Ulangi --}}
+                    <a href="{{ route('guest.pdf', $consultation->id) }}" class="btn btn-primary btn-lg">
+                        <i data-lucide="download" style="width:20px;height:20px"></i>
+                        Download PDF
+                    </a>
+                    <a href="{{ url('/register') }}" class="btn btn-secondary btn-lg">
                         <i data-lucide="user-plus" style="width:20px;height:20px"></i>
                         Simpan & Buat Akun
                     </a>
-                    <a href="{{ url('/diagnosa') }}" class="btn btn-secondary btn-lg">
+                    <a href="{{ url('/diagnosa') }}" class="btn btn-outline btn-lg">
                         <i data-lucide="refresh-ccw" style="width:20px;height:20px"></i>
                         Ulangi Diagnosa
                     </a>

@@ -83,6 +83,18 @@ class ConsultationController extends Controller
         ]);
     }
 
+    /**
+     * Generate PDF for guest consultation result.
+     */
+    public function guestPdf($id)
+    {
+        $consultation = ConsultationResult::with(['details.symptom', 'disease'])
+            ->findOrFail($id);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.konsultasi', compact('consultation'));
+        return $pdf->download('Hasil_Diagnosis_SulaHaring_' . now()->format('Ymd_His') . '.pdf');
+    }
+
     // === Mahasiswa (Authenticated) ===
     public function mahasiswaStart()
     {

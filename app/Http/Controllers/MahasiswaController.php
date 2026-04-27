@@ -61,6 +61,19 @@ class MahasiswaController extends Controller
         return view('pages.mahasiswa.riwayat-detail', compact('consultation'));
     }
 
+    /**
+     * Download PDF for a specific consultation result.
+     */
+    public function downloadPdf($id)
+    {
+        $consultation = ConsultationResult::where('user_id', auth()->id())
+            ->with(['details.symptom', 'disease', 'user'])
+            ->findOrFail($id);
+
+        $pdf = \Barryvdh\DomPDF\Facade\Pdf::loadView('pdf.konsultasi', compact('consultation'));
+        return $pdf->download('Hasil_Diagnosis_SulaHaring_' . now()->format('Ymd_His') . '.pdf');
+    }
+
     public function biometric()
     {
         $data = BiometricData::where('user_id', auth()->id())

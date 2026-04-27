@@ -27,6 +27,7 @@ Route::post('/logout', [AuthController::class, 'logout'])->name('logout');
 Route::get('/diagnosa', [ConsultationController::class, 'guestForm'])->name('guest.form');
 Route::post('/diagnosa/process', [ConsultationController::class, 'guestStart'])->name('guest.process');
 Route::post('/diagnosa/result', [ConsultationController::class, 'guestResult'])->name('guest.result');
+Route::get('/diagnosa/result/{id}/pdf', [ConsultationController::class, 'guestPdf'])->name('guest.pdf');
 
 // === Mahasiswa (authenticated) ===
 Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
@@ -35,6 +36,7 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::post('/konsultasi/result', [ConsultationController::class, 'mahasiswaResult'])->name('konsultasi.result');
     Route::get('/riwayat', [MahasiswaController::class, 'riwayat'])->name('riwayat');
     Route::get('/riwayat/{id}', [MahasiswaController::class, 'riwayatDetail'])->name('riwayat.detail');
+    Route::get('/riwayat/{id}/pdf', [MahasiswaController::class, 'downloadPdf'])->name('riwayat.pdf');
     Route::get('/biometric', [MahasiswaController::class, 'biometric'])->name('biometric');
     Route::get('/notifications', [MahasiswaController::class, 'notifications'])->name('notifications');
     Route::post('/mood', [MahasiswaController::class, 'storeMood'])->name('mood.store');
