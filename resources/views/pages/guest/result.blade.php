@@ -12,12 +12,7 @@
         <div class="result-card">
             <!-- Logo -->
             <div class="result-logo">
-                <svg width="48" height="48" viewBox="0 0 48 48" fill="none">
-                    <defs><linearGradient id="rGrad" x1="0" y1="0" x2="48" y2="48"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
-                    <path d="M24 4C18.5 4 14 8.5 14 14c0 3.5 1.8 6.6 4.5 8.4L12 35c-1 2 .5 4 2.5 4h19c2 0 3.5-2 2.5-4l-6.5-12.6C32.2 20.6 34 17.5 34 14c0-5.5-4.5-10-10-10z" fill="url(#rGrad)"/>
-                    <path d="M20 16c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    <circle cx="24" cy="20" r="2" fill="white"/>
-                </svg>
+                <img src="{{ asset('images/logo-sulaharing.png') }}" alt="SulaHaring" style="width:48px;height:48px;object-fit:contain">
             </div>
 
             <h2 class="result-title">Hasil Konsultasi</h2>

@@ -13,17 +13,7 @@
     <div class="container">
         <div class="navbar-inner">
             <a href="{{ url('/') }}" class="navbar-logo">
-                <svg width="40" height="40" viewBox="0 0 48 48" fill="none">
-                    <defs>
-                        <linearGradient id="navLogoGrad" x1="0" y1="0" x2="48" y2="48">
-                            <stop offset="0%" stop-color="#8b5cf6"/>
-                            <stop offset="100%" stop-color="#3b82f6"/>
-                        </linearGradient>
-                    </defs>
-                    <path d="M24 4C18.5 4 14 8.5 14 14c0 3.5 1.8 6.6 4.5 8.4L12 35c-1 2 .5 4 2.5 4h19c2 0 3.5-2 2.5-4l-6.5-12.6C32.2 20.6 34 17.5 34 14c0-5.5-4.5-10-10-10z" fill="url(#navLogoGrad)"/>
-                    <path d="M20 16c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-                    <circle cx="24" cy="20" r="2" fill="white"/>
-                </svg>
+                <img src="{{ asset('images/logo-sulaharing.png') }}" alt="SulaHaring" style="width:40px;height:40px;object-fit:contain">
                 <span class="navbar-logo-text">Sula<span>Haring</span></span>
             </a>
 
@@ -66,95 +56,34 @@
 <!-- Hero Section -->
 <section class="hero" id="hero">
     <div class="container">
-        <div class="hero-grid">
-            <div class="hero-content">
-                <div class="hero-badge">
-                    <i data-lucide="shield-check" style="width:16px;height:16px"></i>
-                    Sistem Pakar Berbasis AI & IoT
-                </div>
+        <div class="hero-content" style="max-width:640px; margin:0 auto; text-align:center;">
+            <h1 class="hero-title" style="text-align:center;">
+                Kesehatan <span class="highlight">Mentalmu</span>,<br>
+                Prioritas Utamamu
+            </h1>
 
-                <h1 class="hero-title">
-                    Kesehatan <span class="highlight">Mentalmu</span>,<br>
-                    Prioritas Utamamu
-                </h1>
+            <p class="hero-subtitle" style="text-align:center; margin-left:auto; margin-right:auto;">
+                Integrasi Web Diagnosis & IOT Smartwatch untuk Deteksi dini Depresi
+            </p>
 
-                <p class="hero-subtitle">
-                    Integrasi web diagnosis & IoT smartwatch untuk deteksi dini depresi. 
-                    Menggunakan metode <strong>Certainty Factor</strong> yang tervalidasi secara klinis.
-                </p>
-
-                <div class="hero-actions">
-                    <a href="{{ url('/diagnosa') }}" class="btn btn-primary btn-lg" id="btn-mulai-diagnosa">
-                        <i data-lucide="stethoscope" style="width:20px;height:20px"></i>
-                        Mulai Diagnosa
-                    </a>
-                    <a href="#cara-kerja" class="btn btn-secondary btn-lg">
-                        <i data-lucide="play-circle" style="width:20px;height:20px"></i>
-                        Pelajari Lebih Lanjut
-                    </a>
-                </div>
-
-                <div class="hero-stats">
-                    <div class="hero-stat">
-                        <div class="hero-stat-value">21</div>
-                        <div class="hero-stat-label">Indikator BDI-II</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="hero-stat-value">4</div>
-                        <div class="hero-stat-label">Tingkat Klasifikasi</div>
-                    </div>
-                    <div class="hero-stat">
-                        <div class="hero-stat-value">IoT</div>
-                        <div class="hero-stat-label">Smartwatch Terintegrasi</div>
-                    </div>
+            <!-- Logo visual -->
+            <div style="margin: var(--space-8) auto; max-width:220px;">
+                <div class="brain-visual" style="width:200px;height:200px;margin:0 auto;">
+                    <img src="{{ asset('images/logo-sulaharing.png') }}" alt="SulaHaring Logo" style="width:150px;height:150px;">
                 </div>
             </div>
 
-            <div class="hero-visual">
-                <div class="hero-illustration">
-                    <div class="brain-visual">
-                        <svg viewBox="0 0 120 120" fill="none">
-                            <!-- Stylized brain/heart icon -->
-                            <path d="M60 20c-16 0-28 12-28 28 0 10 5 18.5 12.5 23.5L32 95c-1.5 3 1 6 4 6h48c3 0 5.5-3 4-6L75.5 71.5C83 66.5 88 58 88 48c0-16-12-28-28-28z" fill="url(#brainGrad)" opacity="0.2"/>
-                            <path d="M60 30c-10 0-18 8-18 18s8 18 18 18 18-8 18-18-8-18-18-18z" stroke="url(#brainGrad)" stroke-width="2" fill="none"/>
-                            <path d="M52 44c0-4.4 3.6-8 8-8s8 3.6 8 8" stroke="#3b82f6" stroke-width="2.5" fill="none" stroke-linecap="round"/>
-                            <circle cx="60" cy="52" r="3" fill="#3b82f6"/>
-                            <!-- Heartbeat line -->
-                            <path d="M30 60h15l5-12 8 24 6-18 5 6h21" stroke="#06b6d4" stroke-width="2" fill="none" stroke-linecap="round" stroke-linejoin="round" opacity="0.6"/>
-                            <defs>
-                                <linearGradient id="brainGrad" x1="32" y1="20" x2="88" y2="101">
-                                    <stop offset="0%" stop-color="#8b5cf6"/>
-                                    <stop offset="100%" stop-color="#3b82f6"/>
-                                </linearGradient>
-                            </defs>
-                        </svg>
-                    </div>
+            <p style="font-size:var(--text-sm); color:var(--text-secondary); margin-bottom:var(--space-8);">
+                Mulai Perjalanan Menuju Kesehatan Mental Yang Lebih Baik
+            </p>
 
-                    <!-- Floating cards -->
-                    <div class="hero-card-float card-1">
-                        <div class="card-icon blue">
-                            <i data-lucide="heart-pulse" style="width:18px;height:18px"></i>
-                        </div>
-                        <div class="card-label">Heart Rate</div>
-                        <div class="card-value">72 BPM — Normal</div>
-                    </div>
-
-                    <div class="hero-card-float card-2">
-                        <div class="card-icon green">
-                            <i data-lucide="brain" style="width:18px;height:18px"></i>
-                        </div>
-                        <div class="card-label">CF Score</div>
-                        <div class="card-value">35% — Ringan</div>
-                    </div>
-
-                    <div class="hero-card-float card-3">
-                        <div class="card-icon violet">
-                            <i data-lucide="activity" style="width:18px;height:18px"></i>
-                        </div>
-                        <div class="card-label">HRV</div>
-                        <div class="card-value">45ms — Baik</div>
-                    </div>
-                </div>
+            <div class="hero-actions" style="justify-content:center;">
+                <a href="{{ url('/diagnosa') }}" class="btn btn-primary btn-lg" id="btn-mulai-diagnosa">
+                    Mulai Diagnosa
+                </a>
+                <a href="#cara-kerja" class="btn btn-secondary btn-lg">
+                    Pelajari Lebih Lanjut
+                </a>
             </div>
         </div>
     </div>
@@ -296,8 +225,8 @@
 
         <div class="articles-grid">
             <div class="article-card animate-fade-in-up">
-                <div class="article-image" style="background:linear-gradient(135deg, #dbeafe 0%, #e0f2fe 100%); display:flex; align-items:center; justify-content:center;">
-                    <i data-lucide="brain" style="width:64px;height:64px;color:#3b82f6;opacity:0.5"></i>
+                <div class="article-image" style="background:linear-gradient(135deg, #e0dbf0 0%, #ccf5ed 100%); display:flex; align-items:center; justify-content:center;">
+                    <i data-lucide="brain" style="width:64px;height:64px;color:#7e6bb5;opacity:0.5"></i>
                 </div>
                 <div class="article-body">
                     <div class="article-category">Edukasi</div>
@@ -311,8 +240,8 @@
             </div>
 
             <div class="article-card animate-fade-in-up delay-200">
-                <div class="article-image" style="background:linear-gradient(135deg, #f3e8ff 0%, #ede9fe 100%); display:flex; align-items:center; justify-content:center;">
-                    <i data-lucide="heart-pulse" style="width:64px;height:64px;color:#8b5cf6;opacity:0.5"></i>
+                <div class="article-image" style="background:linear-gradient(135deg, #f0edf7 0%, #e0dbf0 100%); display:flex; align-items:center; justify-content:center;">
+                    <i data-lucide="heart-pulse" style="width:64px;height:64px;color:#9b8ec4;opacity:0.5"></i>
                 </div>
                 <div class="article-body">
                     <div class="article-category">Tips</div>
@@ -326,8 +255,8 @@
             </div>
 
             <div class="article-card animate-fade-in-up delay-400">
-                <div class="article-image" style="background:linear-gradient(135deg, #ccfbf1 0%, #cffafe 100%); display:flex; align-items:center; justify-content:center;">
-                    <i data-lucide="users" style="width:64px;height:64px;color:#06b6d4;opacity:0.5"></i>
+                <div class="article-image" style="background:linear-gradient(135deg, #ccf5ed 0%, #e8faf7 100%); display:flex; align-items:center; justify-content:center;">
+                    <i data-lucide="users" style="width:64px;height:64px;color:#4ecdc4;opacity:0.5"></i>
                 </div>
                 <div class="article-body">
                     <div class="article-category">Berita</div>
@@ -369,13 +298,8 @@
         <div class="footer-grid">
             <div class="footer-brand">
                 <a href="{{ url('/') }}" class="navbar-logo" style="margin-bottom:0">
-                    <svg width="36" height="36" viewBox="0 0 48 48" fill="none">
-                        <defs><linearGradient id="footerGrad" x1="0" y1="0" x2="48" y2="48"><stop offset="0%" stop-color="#8b5cf6"/><stop offset="100%" stop-color="#3b82f6"/></linearGradient></defs>
-                        <path d="M24 4C18.5 4 14 8.5 14 14c0 3.5 1.8 6.6 4.5 8.4L12 35c-1 2 .5 4 2.5 4h19c2 0 3.5-2 2.5-4l-6.5-12.6C32.2 20.6 34 17.5 34 14c0-5.5-4.5-10-10-10z" fill="url(#footerGrad)"/>
-                        <path d="M20 16c0-2.2 1.8-4 4-4s4 1.8 4 4" stroke="white" stroke-width="2" fill="none" stroke-linecap="round"/>
-                        <circle cx="24" cy="20" r="2" fill="white"/>
-                    </svg>
-                    <span class="navbar-logo-text" style="color:white">Sula<span>Haring</span></span>
+                    <img src="{{ asset('images/logo-sulaharing.png') }}" alt="SulaHaring" style="width:36px;height:36px;object-fit:contain">
+                    <span class="navbar-logo-text" style="color:white">Sula<span style="-webkit-text-fill-color:white">Haring</span></span>
                 </a>
                 <p>Sistem pakar berbasis web untuk skrining depresi mahasiswa menggunakan metode Certainty Factor yang terintegrasi dengan IoT smartwatch.</p>
             </div>

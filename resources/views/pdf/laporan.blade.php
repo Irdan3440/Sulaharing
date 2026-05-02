@@ -5,8 +5,8 @@
     <title>Laporan Skrining Depresi Kampus</title>
     <style>
         body { font-family: sans-serif; font-size: 12px; line-height: 1.5; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; }
-        .logo-text { font-size: 24px; font-weight: bold; color: #2563eb; }
+        .header { text-align: center; border-bottom: 2px solid #6a54a4; padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #6a54a4; }
         .subtitle { font-size: 14px; color: #6b7280; }
         .filter-info { margin-bottom: 20px; background: #f3f4f6; padding: 10px; border-radius: 5px; }
         .data-table { width: 100%; border-collapse: collapse; margin-top: 10px; }

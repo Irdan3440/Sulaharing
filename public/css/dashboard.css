@@ -97,7 +97,7 @@
 
 .sidebar-link.active {
     color: white;
-    background: rgba(59, 130, 246, 0.25);
+    background: rgba(155, 142, 196, 0.25);
 }
 
 .sidebar-link.active::before {
@@ -451,14 +451,14 @@
 .mood-emoji:hover {
     transform: scale(1.15);
     border-color: var(--primary-400);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.2);
+    box-shadow: 0 0 12px rgba(155, 142, 196, 0.2);
 }
 
 .mood-emoji.selected {
     border-color: var(--primary-500);
     background: var(--primary-50);
     transform: scale(1.15);
-    box-shadow: 0 0 12px rgba(59, 130, 246, 0.25);
+    box-shadow: 0 0 12px rgba(155, 142, 196, 0.25);
 }
 
 .mood-streak {

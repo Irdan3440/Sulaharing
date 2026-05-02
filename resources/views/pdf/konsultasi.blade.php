@@ -5,15 +5,15 @@
     <title>Hasil Diagnosis SulaHaring</title>
     <style>
         body { font-family: sans-serif; font-size: 14px; line-height: 1.5; color: #333; }
-        .header { text-align: center; border-bottom: 2px solid #2563eb; padding-bottom: 15px; margin-bottom: 20px; }
-        .logo-text { font-size: 24px; font-weight: bold; color: #2563eb; }
+        .header { text-align: center; border-bottom: 2px solid #6a54a4; padding-bottom: 15px; margin-bottom: 20px; }
+        .logo-text { font-size: 24px; font-weight: bold; color: #6a54a4; }
         .subtitle { font-size: 14px; color: #6b7280; }
         .info-table { width: 100%; margin-bottom: 20px; }
         .info-table td { padding: 5px; }
         .info-label { font-weight: bold; width: 150px; }
         .result-box { background: #f0fdf4; border: 1px solid #bbf7d0; padding: 20px; border-radius: 8px; text-align: center; margin-bottom: 20px; }
         .result-title { font-size: 18px; font-weight: bold; margin-bottom: 10px; color: #166534; }
-        .result-score { font-size: 36px; font-weight: bold; color: #2563eb; }
+        .result-score { font-size: 36px; font-weight: bold; color: #6a54a4; }
         .details-table { width: 100%; border-collapse: collapse; margin-top: 20px; }
         .details-table th, .details-table td { border: 1px solid #e5e7eb; padding: 10px; text-align: left; }
         .details-table th { background: #f9fafb; font-weight: bold; }
