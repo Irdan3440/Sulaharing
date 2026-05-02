@@ -5,35 +5,7 @@
 @section('page_subtitle', 'Selamat datang kembali, ' . (auth()->user()->name ?? 'User'))
 
 @section('sidebar')
-<div class="sidebar-section">
-    <div class="sidebar-section-title">Menu Utama</div>
-    <ul>
-        <li><a href="{{ url('/dashboard') }}" class="sidebar-link active">
-            <i data-lucide="layout-dashboard"></i> Dashboard
-        </a></li>
-        <li><a href="{{ url('/konsultasi') }}" class="sidebar-link">
-            <i data-lucide="stethoscope"></i> Mulai Konsultasi
-        </a></li>
-        <li><a href="{{ url('/riwayat') }}" class="sidebar-link">
-            <i data-lucide="history"></i> Riwayat
-        </a></li>
-        <li><a href="{{ url('/biometric') }}" class="sidebar-link">
-            <i data-lucide="heart-pulse"></i> Biometrik
-        </a></li>
-    </ul>
-</div>
-<div class="sidebar-section">
-    <div class="sidebar-section-title">Lainnya</div>
-    <ul>
-        <li><a href="{{ url('/notifications') }}" class="sidebar-link">
-            <i data-lucide="bell"></i> Notifikasi
-            <span class="badge-count">3</span>
-        </a></li>
-        <li><a href="#" class="sidebar-link">
-            <i data-lucide="settings"></i> Pengaturan
-        </a></li>
-    </ul>
-</div>
+@include('partials.sidebar-mahasiswa')
 @endsection
 
 @push('styles')
@@ -299,8 +271,8 @@
     const ctx = document.getElementById('moodChart');
     if (ctx) {
         const gradient = ctx.getContext('2d').createLinearGradient(0, 0, 0, 280);
-        gradient.addColorStop(0, 'rgba(59, 130, 246, 0.15)');
-        gradient.addColorStop(1, 'rgba(59, 130, 246, 0.01)');
+        gradient.addColorStop(0, 'rgba(155, 142, 196, 0.15)');
+        gradient.addColorStop(1, 'rgba(155, 142, 196, 0.01)');
 
         new Chart(ctx, {
             type: 'line',
@@ -311,9 +283,9 @@
                     data: [3, 4, 3, 5, 4, 4, 5],
                     fill: true,
                     backgroundColor: gradient,
-                    borderColor: '#3b82f6',
+                    borderColor: '#9b8ec4',
                     borderWidth: 2.5,
-                    pointBackgroundColor: '#3b82f6',
+                    pointBackgroundColor: '#9b8ec4',
                     pointBorderColor: '#fff',
                     pointBorderWidth: 2,
                     pointRadius: 5,
@@ -327,7 +299,7 @@
                 plugins: {
                     legend: { display: false },
                     tooltip: {
-                        backgroundColor: '#1e3a5f',
+                        backgroundColor: '#302460',
                         titleFont: { family: 'Inter', weight: '600' },
                         bodyFont: { family: 'Inter' },
                         cornerRadius: 8,

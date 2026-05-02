@@ -34,7 +34,11 @@
             </div>
 
             <nav class="sidebar-nav">
-                @yield('sidebar')
+                @hasSection('sidebar')
+                    @yield('sidebar')
+                @else
+                    @include('partials.sidebar-mahasiswa')
+                @endif
             </nav>
 
             <div class="sidebar-footer">
