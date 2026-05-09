@@ -110,24 +110,44 @@
 </div>
 
 <!-- Quick Actions -->
-<div class="quick-actions">
+<div class="quick-actions grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
     <a href="{{ url('/konsultasi') }}" class="quick-action-card animate-fade-in-up">
         <div class="quick-action-icon" style="background:var(--gradient-primary);">
             <i data-lucide="stethoscope" style="color:white;width:22px;height:22px"></i>
         </div>
         <div class="quick-action-info">
             <h5>Mulai Konsultasi</h5>
-            <p>Isi kuesioner BDI-II untuk diagnosis baru</p>
+            <p>Isi kuesioner BDI-II</p>
         </div>
     </a>
 
-    <a href="{{ url('/riwayat') }}" class="quick-action-card animate-fade-in-up delay-100">
-        <div class="quick-action-icon" style="background:var(--gradient-violet);">
-            <i data-lucide="history" style="color:white;width:22px;height:22px"></i>
+    <a href="{{ url('/terapi') }}" class="quick-action-card animate-fade-in-up delay-100">
+        <div class="quick-action-icon" style="background:var(--gradient-primary);">
+            <i data-lucide="heart-pulse" style="color:white;width:22px;height:22px"></i>
         </div>
         <div class="quick-action-info">
-            <h5>Lihat Riwayat</h5>
-            <p>Evaluasi progres kesehatan mentalmu</p>
+            <h5>Terapi CBT</h5>
+            <p>Pernapasan & Pomodoro</p>
+        </div>
+    </a>
+
+    <a href="{{ url('/pengaturan/kontak-darurat') }}" class="quick-action-card animate-fade-in-up delay-200">
+        <div class="quick-action-icon" style="background:var(--gradient-primary);">
+            <i data-lucide="user-check" style="color:white;width:22px;height:22px"></i>
+        </div>
+        <div class="quick-action-info">
+            <h5>Kontak Darurat</h5>
+            <p>Set nomor darurat</p>
+        </div>
+    </a>
+
+    <a href="{{ url('/tele-counseling') }}" class="quick-action-card animate-fade-in-up delay-300">
+        <div class="quick-action-icon" style="background:var(--gradient-primary);">
+            <i data-lucide="phone-outgoing" style="color:white;width:22px;height:22px"></i>
+        </div>
+        <div class="quick-action-info">
+            <h5>Tele-Counseling</h5>
+            <p>Hubungi psikolog via WA</p>
         </div>
     </a>
 </div>
@@ -181,29 +201,115 @@
                 Status Smartwatch
             </h5>
             <div class="biometric-status">
-                <span class="status-indicator online"></span>
-                <span style="font-size:var(--text-sm);color:var(--success-600);font-weight:600">Terhubung</span>
+                <span class="status-indicator {{ $latestBio ? 'online' : 'offline' }}"></span>
+                <span style="font-size:var(--text-sm);color:var(--success-600);font-weight:600">{{ $latestBio ? 'Terhubung (Aktif)' : 'Belum Ada Data' }}</span>
             </div>
             <div class="biometric-metrics">
                 <div class="biometric-metric">
-                    <div class="biometric-metric-value">72</div>
+                    <div class="biometric-metric-value" id="val-bpm">{{ $latestBio->heart_rate ?? '--' }}</div>
                     <div class="biometric-metric-label">BPM</div>
                 </div>
                 <div class="biometric-metric">
-                    <div class="biometric-metric-value">45</div>
+                    <div class="biometric-metric-value" id="val-hrv">{{ $latestBio->hrv ?? '--' }}</div>
                     <div class="biometric-metric-label">HRV <span class="biometric-metric-unit">ms</span></div>
                 </div>
                 <div class="biometric-metric">
-                    <div class="biometric-metric-value">98</div>
+                    <div class="biometric-metric-value" id="val-spo2">{{ $latestBio->spo2 ?? '--' }}</div>
                     <div class="biometric-metric-label">SpO2 <span class="biometric-metric-unit">%</span></div>
                 </div>
                 <div class="biometric-metric">
-                    <div class="biometric-metric-value">Normal</div>
+                    <div class="biometric-metric-value" id="val-status" style="color:{{ ($latestBio && ($latestBio->heart_rate > 100 || $latestBio->hrv < 30)) ? 'var(--danger-500)' : 'var(--success-500)' }}">{{ $latestBio ? (($latestBio->heart_rate > 100 || $latestBio->hrv < 30) ? 'Bahaya' : 'Normal') : '--' }}</div>
                     <div class="biometric-metric-label">Status</div>
                 </div>
             </div>
+
+            <div id="wa-button-container" style="display: {{ ($latestBio && ($latestBio->heart_rate > 100 || $latestBio->hrv < 30)) ? 'block' : 'none' }};">
+                @if($emergencyContact)
+                    @php
+                        $msg = "🚨 *SULAHARING EMERGENCY ALERT* 🚨\n\n";
+                        $msg .= "Halo {$emergencyContact->name},\n\n";
+                        $msg .= "Sistem mendeteksi detak jantung yang anomali/terindikasi *Panic Attack* pada:\n";
+                        $msg .= "👤 *Nama:* ".auth()->user()->name."\n";
+                        $msg .= "⏳ *Waktu:* (Waktu Deteksi: " . now()->format('d M Y, H:i') . ")\n\n";
+                        $msg .= "Harap segera periksa kondisinya. Terima kasih.";
+                        
+                        $phone = preg_replace('/\D/', '', $emergencyContact->phone);
+                        if (str_starts_with($phone, '0')) {
+                            $phone = '62' . substr($phone, 1);
+                        }
+                        
+                        $waLink = "https://wa.me/{$phone}?text=" . urlencode($msg);
+                    @endphp
+                    <div style="margin-top: 1.5rem;">
+                        <a href="{{ $waLink }}" target="_blank" style="display:flex; justify-content:center; align-items:center; gap:8px; width:100%; background:var(--danger-500); color:white; padding:12px; border-radius:var(--radius-lg); font-weight:700; text-decoration:none; animation: pulse 2s infinite;">
+                            <i data-lucide="alert-triangle" style="width:20px;height:20px;"></i>
+                            KIRIM PERINGATAN WA SEKARANG
+                        </a>
+                    </div>
+                    <style>
+                        @keyframes pulse {
+                            0% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0.7); }
+                            70% { box-shadow: 0 0 0 15px rgba(239, 68, 68, 0); }
+                            100% { box-shadow: 0 0 0 0 rgba(239, 68, 68, 0); }
+                        }
+                    </style>
+                @else
+                    <div style="margin-top: 1.5rem; background:rgba(239, 68, 68, 0.1); padding:1rem; border-radius:var(--radius-md); text-align:center;">
+                        <p style="color:var(--danger-600); font-weight:600; font-size:var(--text-sm); margin-bottom:8px;">Terdeteksi Anomali Jantung!</p>
+                        <a href="{{ url('pengaturan/kontak-darurat') }}" style="color:var(--danger-600); text-decoration:underline; font-size:var(--text-xs);">Atur Kontak Darurat Sekarang</a>
+                    </div>
+                @endif
+            </div>
         </div>
     </div>
+</div>
+
+<!-- Smartwatch Data Table -->
+<div class="chart-card animate-fade-in-up delay-400" style="margin-top:var(--space-6)">
+    <div class="chart-header">
+        <h5 class="chart-title">
+            <i data-lucide="activity" style="width:20px;height:20px;color:var(--accent-500);vertical-align:middle"></i>
+            Data Biometrik Terakhir
+        </h5>
+        <a href="{{ route('biometric') }}" class="btn btn-sm btn-secondary">Lihat Selengkapnya</a>
+    </div>
+
+    @if($recentBio->count())
+    <div style="overflow-x:auto">
+        <table class="data-table" id="bio-table" style="width:100%;text-align:left;border-collapse:collapse;">
+            <thead>
+                <tr style="border-bottom:1px solid var(--border-color);">
+                    <th style="padding:var(--space-3);color:var(--text-muted);font-weight:600;font-size:var(--text-sm)">Waktu</th>
+                    <th style="padding:var(--space-3);color:var(--text-muted);font-weight:600;font-size:var(--text-sm)">BPM</th>
+                    <th style="padding:var(--space-3);color:var(--text-muted);font-weight:600;font-size:var(--text-sm)">HRV (ms)</th>
+                    <th style="padding:var(--space-3);color:var(--text-muted);font-weight:600;font-size:var(--text-sm)">SpO2 (%)</th>
+                    <th style="padding:var(--space-3);color:var(--text-muted);font-weight:600;font-size:var(--text-sm)">Kondisi</th>
+                </tr>
+            </thead>
+            <tbody id="bio-tbody">
+                @foreach($recentBio as $bio)
+                <tr style="border-bottom:1px solid var(--border-color);">
+                    <td style="padding:var(--space-3);font-size:var(--text-sm);">{{ $bio->recorded_at->format('d M Y, H:i:s') }}</td>
+                    <td style="padding:var(--space-3);font-weight:600;color:{{ $bio->heart_rate > 100 ? 'var(--danger-600)' : 'var(--text-primary)' }}">{{ $bio->heart_rate }}</td>
+                    <td style="padding:var(--space-3);font-weight:600;color:{{ $bio->hrv < 30 ? 'var(--danger-600)' : 'var(--text-primary)' }}">{{ $bio->hrv }}</td>
+                    <td style="padding:var(--space-3);font-weight:600;color:{{ $bio->spo2 < 95 ? 'var(--danger-600)' : 'var(--text-primary)' }}">{{ $bio->spo2 }}</td>
+                    <td style="padding:var(--space-3);">
+                        @if($bio->heart_rate > 100 || $bio->hrv < 30)
+                            <span style="background:rgba(239, 68, 68, 0.1);color:var(--danger-600);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;">Stres/Anomali</span>
+                        @else
+                            <span style="background:rgba(34, 197, 94, 0.1);color:var(--success-600);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;">Normal</span>
+                        @endif
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </div>
+    @else
+    <div style="padding:var(--space-6);text-align:center;color:var(--text-muted)">
+        Belum ada data biometrik yang terekam.
+    </div>
+    @endif
 </div>
 
 <!-- Recent History -->
@@ -327,5 +433,75 @@
             }
         });
     }
+});
+</script>
+
+</script>
+
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
+<script>
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: '{{ env('REVERB_APP_KEY') }}',
+        wsHost: '{{ env('REVERB_HOST', 'localhost') }}',
+        wsPort: {{ env('REVERB_PORT', 8080) }},
+        wssPort: {{ env('REVERB_PORT', 8080) }},
+        forceTLS: false,
+        enabledTransports: ['ws', 'wss'],
+    });
+
+    // Listen to WebSocket Events for real-time dashboard updates
+    window.Echo.channel('biometric.{{ auth()->id() }}')
+            .listen('BiometricUpdated', (e) => {
+                const data = e.biometricData;
+                
+                // Update Metrics
+                document.getElementById('val-bpm').textContent = data.heart_rate;
+                document.getElementById('val-hrv').textContent = data.hrv;
+                document.getElementById('val-spo2').textContent = data.spo2;
+                
+                const isAnomaly = data.heart_rate > 100 || data.hrv < 30;
+                
+                const statusEl = document.getElementById('val-status');
+                statusEl.textContent = isAnomaly ? 'Bahaya' : 'Normal';
+                statusEl.style.color = isAnomaly ? 'var(--danger-500)' : 'var(--success-500)';
+                
+                // Toggle WA Button
+                document.getElementById('wa-button-container').style.display = isAnomaly ? 'block' : 'none';
+                
+                // Update Table
+                const tbody = document.getElementById('bio-tbody');
+                if (tbody) {
+                    const time = new Date(data.recorded_at).toLocaleString('id-ID', {day:'2-digit', month:'short', year:'numeric', hour:'2-digit', minute:'2-digit', second:'2-digit'});
+                    
+                    const row = document.createElement('tr');
+                    row.style.borderBottom = '1px solid var(--border-color)';
+                    row.style.animation = 'fadeIn 0.5s ease-out';
+                    
+                    const bpmColor = data.heart_rate > 100 ? 'var(--danger-600)' : 'var(--text-primary)';
+                    const hrvColor = data.hrv < 30 ? 'var(--danger-600)' : 'var(--text-primary)';
+                    const spo2Color = data.spo2 < 95 ? 'var(--danger-600)' : 'var(--text-primary)';
+                    
+                    const kondisiHtml = isAnomaly 
+                        ? '<span style="background:rgba(239, 68, 68, 0.1);color:var(--danger-600);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;">Stres/Anomali</span>'
+                        : '<span style="background:rgba(34, 197, 94, 0.1);color:var(--success-600);padding:2px 8px;border-radius:12px;font-size:12px;font-weight:700;">Normal</span>';
+                    
+                    row.innerHTML = `
+                        <td style="padding:var(--space-3);font-size:var(--text-sm);">${time}</td>
+                        <td style="padding:var(--space-3);font-weight:600;color:${bpmColor}">${data.heart_rate}</td>
+                        <td style="padding:var(--space-3);font-weight:600;color:${hrvColor}">${data.hrv}</td>
+                        <td style="padding:var(--space-3);font-weight:600;color:${spo2Color}">${data.spo2}</td>
+                        <td style="padding:var(--space-3);">${kondisiHtml}</td>
+                    `;
+                    
+                    tbody.insertBefore(row, tbody.firstChild);
+                    
+                    // Keep only 5 rows
+                    if (tbody.children.length > 5) {
+                        tbody.removeChild(tbody.lastChild);
+                    }
+                }
+            });
 </script>
 @endpush

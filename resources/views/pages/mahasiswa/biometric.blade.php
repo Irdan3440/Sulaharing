@@ -19,24 +19,26 @@
 <!-- Latest Values -->
 <div class="bio-grid">
     <div class="bio-card">
-        <div class="bio-icon" style="background:rgba(239,68,68,0.1)"><i data-lucide="heart-pulse" style="width:24px;height:24px;color:var(--danger-500)"></i></div>
-        <div class="bio-value">{{ $latest->heart_rate ?? '--' }}</div>
-        <div class="bio-label">BPM (Heart Rate)</div>
-        <div class="bio-status" style="color:{{ ($latest && $latest->heart_rate > 100) ? 'var(--danger-600)' : 'var(--success-600)' }}">
-            {{ $latest ? ($latest->heart_rate > 100 ? '⚠ Tinggi' : ($latest->heart_rate < 50 ? '⚠ Rendah' : '✓ Normal')) : 'N/A' }}
+        <div class="bio-icon" style="background:rgba(239,68,68,0.1)"><i data-lucide="activity" style="width:24px;height:24px;color:var(--danger-500)"></i></div>
+        <div class="bio-value" id="bio-bpm">{{ $latest->heart_rate ?? '--' }}</div>
+        <div class="bio-label">BPM</div>
+        <div class="bio-status" id="bio-bpm-status" style="color:{{ ($latest && $latest->heart_rate && ($latest->heart_rate > 100 || $latest->heart_rate < 50)) ? 'var(--danger-600)' : 'var(--success-600)' }}">
+            {{ $latest && $latest->heart_rate ? (($latest->heart_rate > 100 || $latest->heart_rate < 50) ? '⚠ Anomali' : '✓ Normal') : 'N/A' }}
         </div>
     </div>
     <div class="bio-card">
-        <div class="bio-icon" style="background:rgba(139,92,246,0.1)"><i data-lucide="activity" style="width:24px;height:24px;color:var(--violet-500)"></i></div>
-        <div class="bio-value">{{ $latest->hrv ?? '--' }}</div>
-        <div class="bio-label">HRV (ms)</div>
-        <div class="bio-status" style="color:var(--success-600)">{{ $latest ? '✓ Normal' : 'N/A' }}</div>
+        <div class="bio-icon" style="background:rgba(139,92,246,0.1)"><i data-lucide="activity-square" style="width:24px;height:24px;color:var(--violet-500)"></i></div>
+        <div class="bio-value" id="bio-hrv">{{ $latest->hrv ?? '--' }}<span style="font-size:var(--text-base)">ms</span></div>
+        <div class="bio-label">HRV</div>
+        <div class="bio-status" id="bio-hrv-status" style="color:{{ ($latest && $latest->hrv && $latest->hrv < 30) ? 'var(--danger-600)' : 'var(--success-600)' }}">
+            {{ $latest && $latest->hrv ? ($latest->hrv < 30 ? '⚠ Rendah' : '✓ Normal') : 'N/A' }}
+        </div>
     </div>
     <div class="bio-card">
         <div class="bio-icon" style="background:rgba(6,182,212,0.1)"><i data-lucide="droplets" style="width:24px;height:24px;color:var(--accent-500)"></i></div>
-        <div class="bio-value">{{ $latest->spo2 ?? '--' }}<span style="font-size:var(--text-base)">%</span></div>
+        <div class="bio-value" id="bio-spo2">{{ $latest->spo2 ?? '--' }}<span style="font-size:var(--text-base)">%</span></div>
         <div class="bio-label">SpO2</div>
-        <div class="bio-status" style="color:{{ ($latest && $latest->spo2 && $latest->spo2 < 95) ? 'var(--danger-600)' : 'var(--success-600)' }}">
+        <div class="bio-status" id="bio-spo2-status" style="color:{{ ($latest && $latest->spo2 && $latest->spo2 < 95) ? 'var(--danger-600)' : 'var(--success-600)' }}">
             {{ $latest && $latest->spo2 ? ($latest->spo2 < 95 ? '⚠ Rendah' : '✓ Normal') : 'N/A' }}
         </div>
     </div>
@@ -62,10 +64,10 @@
 <script>
 const bioData = @json($data);
 if (bioData.length) {
-    new Chart(document.getElementById('hrChart'), {
+    window.hrChart = new Chart(document.getElementById('hrChart'), {
         type: 'line',
         data: {
-            labels: bioData.map(d => new Date(d.recorded_at).toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit'})),
+            labels: bioData.map(d => new Date(d.recorded_at).toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'})),
             datasets: [{
                 label: 'BPM', data: bioData.map(d => d.heart_rate), borderColor: '#ef4444',
                 backgroundColor: 'rgba(239,68,68,0.08)', fill: true, tension: 0.4, pointRadius: 2
@@ -74,5 +76,60 @@ if (bioData.length) {
         options: { responsive:true, maintainAspectRatio:false, plugins:{legend:{display:false}}, scales:{y:{beginAtZero:false,grid:{color:'rgba(0,0,0,0.04)'}},x:{grid:{display:false},ticks:{maxTicksLimit:10}}} }
     });
 }
+</script>
+
+<script src="https://js.pusher.com/8.2.0/pusher.min.js"></script>
+<script src="https://cdn.jsdelivr.net/npm/laravel-echo@1.16.1/dist/echo.iife.js"></script>
+<script>
+    window.Echo = new Echo({
+        broadcaster: 'reverb',
+        key: '{{ env('REVERB_APP_KEY') }}',
+        wsHost: '{{ env('REVERB_HOST', 'localhost') }}',
+        wsPort: {{ env('REVERB_PORT', 8080) }},
+        wssPort: {{ env('REVERB_PORT', 8080) }},
+        forceTLS: false,
+        enabledTransports: ['ws', 'wss'],
+    });
+
+    window.Echo.channel('biometric.{{ auth()->id() }}')
+        .listen('BiometricUpdated', (e) => {
+            const data = e.biometricData;
+            
+            // Update cards
+            document.getElementById('bio-bpm').innerHTML = data.heart_rate;
+            document.getElementById('bio-hrv').innerHTML = data.hrv + '<span style="font-size:var(--text-base)">ms</span>';
+            document.getElementById('bio-spo2').innerHTML = data.spo2 + '<span style="font-size:var(--text-base)">%</span>';
+            
+            // Update status
+            const isBpmAnomali = data.heart_rate > 100 || data.heart_rate < 50;
+            const bpmStatusEl = document.getElementById('bio-bpm-status');
+            bpmStatusEl.textContent = isBpmAnomali ? '⚠ Anomali' : '✓ Normal';
+            bpmStatusEl.style.color = isBpmAnomali ? 'var(--danger-600)' : 'var(--success-600)';
+            
+            const isHrvAnomali = data.hrv < 30;
+            const hrvStatusEl = document.getElementById('bio-hrv-status');
+            hrvStatusEl.textContent = isHrvAnomali ? '⚠ Rendah' : '✓ Normal';
+            hrvStatusEl.style.color = isHrvAnomali ? 'var(--danger-600)' : 'var(--success-600)';
+            
+            const isSpo2Anomali = data.spo2 < 95;
+            const spo2StatusEl = document.getElementById('bio-spo2-status');
+            spo2StatusEl.textContent = isSpo2Anomali ? '⚠ Rendah' : '✓ Normal';
+            spo2StatusEl.style.color = isSpo2Anomali ? 'var(--danger-600)' : 'var(--success-600)';
+            
+            // Update Chart
+            if (window.hrChart) {
+                const time = new Date(data.recorded_at).toLocaleTimeString('id-ID', {hour:'2-digit',minute:'2-digit',second:'2-digit'});
+                window.hrChart.data.labels.push(time);
+                window.hrChart.data.datasets[0].data.push(data.heart_rate);
+                
+                // Keep chart array max 50 points
+                if (window.hrChart.data.labels.length > 50) {
+                    window.hrChart.data.labels.shift();
+                    window.hrChart.data.datasets[0].data.shift();
+                }
+                
+                window.hrChart.update();
+            }
+        });
 </script>
 @endpush

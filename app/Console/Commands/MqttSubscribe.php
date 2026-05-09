@@ -8,7 +8,8 @@ use PhpMqtt\Client\ConnectionSettings;
 use App\Models\BiometricData;
 use App\Models\IotAlert;
 use App\Events\BiometricUpdated;
-
+use App\Models\User;
+use App\Jobs\SendEmergencyNotificationJob;
 class MqttSubscribe extends Command
 {
     /**
@@ -30,7 +31,7 @@ class MqttSubscribe extends Command
      */
     public function handle()
     {
-        $server   = 'test.mosquitto.org';
+        $server   = 'localhost';
         $port     = 1883;
         $clientId = 'sulaharing-server-' . rand(1000, 9999);
 
@@ -68,16 +69,26 @@ class MqttSubscribe extends Command
                             'recorded_at' => now(),
                         ]);
 
+                        // Broadcast the event
+                        \App\Events\BiometricUpdated::dispatch($bio, $userId);
+
                         // Check for alerts (Abnormal thresholds)
                         if ($payload['heart_rate'] > 100 || $payload['heart_rate'] < 50) {
                             IotAlert::create([
                                 'user_id' => $userId,
                                 'alert_type' => 'Abnormal Heart Rate',
-                                'description' => "Detak jantung terdeteksi tidak normal: {$payload['heart_rate']} BPM",
+                                'message' => "Detak jantung terdeteksi tidak normal: {$payload['heart_rate']} BPM",
                                 'severity' => 'high',
                                 'alerted_at' => now(),
                                 'is_read' => false,
                             ]);
+                        }
+
+                        if ($payload['heart_rate'] > 100 && $payload['hrv'] < 30) {
+                            $user = User::find($userId);
+                            if ($user) {
+                                SendEmergencyNotificationJob::dispatch($user);
+                            }
                         }
 
                         // Broadcast event for real-time UI updates

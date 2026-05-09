@@ -6,7 +6,9 @@ use App\Http\Controllers\ConsultationController;
 use App\Http\Controllers\MahasiswaController;
 use App\Http\Controllers\PakarController;
 use App\Http\Controllers\AdminController;
-
+use App\Http\Controllers\TherapyController;
+use App\Http\Controllers\EmergencyContactController;
+use App\Http\Controllers\TeleCounselingController;
 /*
 |--------------------------------------------------------------------------
 | SulaHaring — Web Routes
@@ -40,6 +42,12 @@ Route::middleware(['auth', 'role:mahasiswa'])->group(function () {
     Route::get('/biometric', [MahasiswaController::class, 'biometric'])->name('biometric');
     Route::get('/notifications', [MahasiswaController::class, 'notifications'])->name('notifications');
     Route::post('/mood', [MahasiswaController::class, 'storeMood'])->name('mood.store');
+    
+    // New Features
+    Route::get('/terapi', [TherapyController::class, 'index'])->name('therapy.index');
+    Route::get('/pengaturan/kontak-darurat', [EmergencyContactController::class, 'edit'])->name('emergency.edit');
+    Route::post('/pengaturan/kontak-darurat', [EmergencyContactController::class, 'update'])->name('emergency.update');
+    Route::get('/tele-counseling', [TeleCounselingController::class, 'index'])->name('tele.counseling');
 });
 
 // === Pakar ===

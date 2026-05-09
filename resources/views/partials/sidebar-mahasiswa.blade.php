@@ -18,6 +18,9 @@
         <li><a href="{{ url('/biometric') }}" class="sidebar-link {{ $currentRoute === 'biometric' ? 'active' : '' }}">
             <i data-lucide="heart-pulse"></i> Biometrik
         </a></li>
+        <li><a href="{{ url('/terapi') }}" class="sidebar-link {{ $currentRoute === 'terapi' ? 'active' : '' }}">
+            <i data-lucide="heart-pulse"></i> Terapi CBT
+        </a></li>
     </ul>
 </div>
 <div class="sidebar-section">
@@ -26,8 +29,11 @@
         <li><a href="{{ url('/notifications') }}" class="sidebar-link {{ $currentRoute === 'notifications' ? 'active' : '' }}">
             <i data-lucide="bell"></i> Notifikasi
         </a></li>
-        <li><a href="{{ url('/pengaturan') }}" class="sidebar-link {{ $currentRoute === 'pengaturan' ? 'active' : '' }}">
-            <i data-lucide="settings"></i> Pengaturan
+        <li><a href="{{ url('/pengaturan/kontak-darurat') }}" class="sidebar-link {{ $currentRoute === 'pengaturan/kontak-darurat' ? 'active' : '' }}">
+            <i data-lucide="user-check"></i> Kontak Darurat
+        </a></li>
+        <li><a href="{{ url('/tele-counseling') }}" class="sidebar-link {{ $currentRoute === 'tele-counseling' ? 'active' : '' }}">
+            <i data-lucide="phone-outgoing"></i> Tele-Counseling
         </a></li>
     </ul>
 </div>

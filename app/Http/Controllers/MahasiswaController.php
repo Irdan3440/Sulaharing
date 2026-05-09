@@ -36,9 +36,18 @@ class MahasiswaController extends Controller
         // Unread alerts
         $unreadAlerts = IotAlert::where('user_id', $user->id)->where('is_read', false)->count();
 
+        // Recent biometric data
+        $recentBio = BiometricData::where('user_id', $user->id)
+            ->latest('recorded_at')
+            ->take(5)
+            ->get();
+            
+        // Emergency Contact
+        $emergencyContact = \App\Models\EmergencyContact::where('user_id', $user->id)->first();
+
         return view('pages.mahasiswa.dashboard', compact(
             'totalConsultations', 'lastCf', 'moodStreak', 'currentBpm',
-            'moodData', 'recentConsultations', 'latestBio', 'unreadAlerts'
+            'moodData', 'recentConsultations', 'latestBio', 'unreadAlerts', 'recentBio', 'emergencyContact'
         ));
     }
 

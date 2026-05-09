@@ -47,7 +47,7 @@
         <input type="date" name="from" value="{{ request('from') }}" class="form-input" style="max-width:160px" placeholder="Dari">
         <input type="date" name="to" value="{{ request('to') }}" class="form-input" style="max-width:160px" placeholder="Sampai">
         <button class="btn btn-sm btn-primary" type="submit"><i data-lucide="filter" style="width:14px;height:14px"></i> Filter</button>
-        <a href="{{ route('admin.reports.pdf', request()->query()) }}" class="btn btn-sm btn-secondary" target="_blank"><i data-lucide="download" style="width:14px;height:14px"></i> Export PDF</a>
+
     </form>
 
     <div style="overflow-x:auto">
